@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		#login{
+			width: 300px;height: 300px;
+			margin: 0 auto;
+		}
+	</style>
+</head>
+<body>
+	<div id="login">
+		<img src=""/>
+	</div>
+	<script type="text/javascript" src="jquery-1.11.3.js"></script>
+	<script type="text/javascript">
+		var arr=[];
+		for(var i=0;i<8;++i)
+		{
+			var temp=parseInt(Math.random()*9);
+			arr.push(temp);
+		}
+		var str=arr.join('');
+		$.ajax({
+			type:'get',
+			url:"mysql.php",
+			data:{randnumber:str},
+			success:function(data)
+			{
+				console.log(data);
+				if(data.code==1)
+				{
+					pos="http://qr.liantu.com/api.php?text="+str;
+					$('#login').children('img').attr('src',pos);
+				}
+			},
+			error:function()
+			{
+				alert('网络故障，请检查');
+			}
+		});
+		function pool()//轮询操作
+		{
+			$.ajax({
+				type:'get',
+				url:"pool.php",
+				data:{randnumber:str},
+				success:function(data)
+				{
+					if(data.code==1)
+					{
+						alert(data.msg);
+					}
+				},
+				error:function()
+				{
+					alert('网络故障，请检查!');
+				}
+			});
+		}
+		setInterval(pool,5000);
+	</script>
+</body>
+</html>
